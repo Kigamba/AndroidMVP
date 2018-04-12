@@ -1,4 +1,4 @@
-package com.kigamba.mvp;
+package com.kigamba.mvp.presenters;
 
 import com.kigamba.mvp.interactors.FindItemsInteractor;
 import com.kigamba.mvp.presenters.MainPresenterImpl;
