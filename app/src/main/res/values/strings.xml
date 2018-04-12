@@ -10,5 +10,8 @@
     <string name="title_activity_main">MVP Example</string>
     <string name="username_error">Username cannot be empty</string>
     <string name="password_error">Password cannot be empty</string>
+    <string name="login_text">Login</string>
+    <string name="passwordEditText">Password</string>
+    <string name="userNameEditText">Username</string>
 
 </resources>
