@@ -4,9 +4,12 @@ import android.os.Handler;
 
 import java.util.Arrays;
 import java.util.List;
-
+/**
+ * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
+ */
 public class FindItemsInteractorImpl implements FindItemsInteractor {
-    @Override public void findItems(final OnFinishedListener listener) {
+    @Override
+    public void findItems(final OnFinishedListener listener) {
         new Handler().postDelayed(new Runnable() {
             @Override public void run() {
                 listener.onFinished(createArrayList());

@@ -15,6 +15,9 @@ import com.kigamba.mvp.views.LoginView;
 import com.kigamba.mvp.presenters.LoginPresenter;
 import com.kigamba.mvp.presenters.LoginPresenterImpl;
 
+/**
+ * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
+ */
 public class LoginActivity extends Activity implements LoginView, View.OnClickListener {
 
     private ProgressDialog progressDialog;
@@ -22,36 +25,42 @@ public class LoginActivity extends Activity implements LoginView, View.OnClickLi
     private EditText password;
     private LoginPresenter presenter;
 
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         progressDialog = new ProgressDialog(this);
-        username = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
-        findViewById(R.id.button).setOnClickListener(this);
+        username = (EditText) findViewById(R.id.login_userNameText);
+        password = (EditText) findViewById(R.id.login_passwordText);
+        findViewById(R.id.login_loginButton).setOnClickListener(this);
 
-        presenter = new LoginPresenterImpl(this,new LoginInteractorImpl());
+        presenter = new LoginPresenterImpl(this, new LoginInteractorImpl());
     }
 
-    @Override protected void onDestroy() {
+    @Override
+    protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
     }
 
-    @Override public void showProgress() {
+    @Override
+    public void showProgress() {
         progressDialog.show();
     }
 
-    @Override public void hideProgress() {
+    @Override
+    public void hideProgress() {
         progressDialog.dismiss();
     }
 
-    @Override public void setUsernameError() {
+    @Override
+    public void setUsernameError() {
         username.setError(getString(R.string.username_error));
     }
 
-    @Override public void setPasswordError() {
+    @Override
+    public void setPasswordError() {
         password.setError(getString(R.string.password_error));
     }
 
@@ -61,12 +70,14 @@ public class LoginActivity extends Activity implements LoginView, View.OnClickLi
                 .show();
     }
 
-    @Override public void navigateToHome() {
+    @Override
+    public void navigateToHome() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
-    @Override public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         presenter.validateCredentials(username.getText().toString(), password.getText().toString());
     }
 }

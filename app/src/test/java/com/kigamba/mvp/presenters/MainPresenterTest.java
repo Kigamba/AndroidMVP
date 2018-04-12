@@ -22,6 +22,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+/**
+ * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class MainPresenterTest {
 

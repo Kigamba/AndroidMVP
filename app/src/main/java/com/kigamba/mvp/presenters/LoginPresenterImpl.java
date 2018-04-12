@@ -3,6 +3,9 @@ package com.kigamba.mvp.presenters;
 import com.kigamba.mvp.interactors.LoginInteractor;
 import com.kigamba.mvp.views.LoginView;
 
+/**
+ * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
+ */
 public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLoginFinishedListener {
 
     private LoginView loginView;
@@ -13,7 +16,8 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
         this.loginInteractor = loginInteractor;
     }
 
-    @Override public void validateCredentials(String username, String password) {
+    @Override
+    public void validateCredentials(String username, String password) {
         if (loginView != null) {
             loginView.showProgress();
         }
@@ -21,18 +25,21 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
         loginInteractor.login(username, password, this);
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         loginView = null;
     }
 
-    @Override public void onUsernameError() {
+    @Override
+    public void onUsernameError() {
         if (loginView != null) {
             loginView.setUsernameError();
             loginView.hideProgress();
         }
     }
 
-    @Override public void onPasswordError() {
+    @Override
+    public void onPasswordError() {
         if (loginView != null) {
             loginView.setPasswordError();
             loginView.hideProgress();
@@ -47,7 +54,8 @@ public class LoginPresenterImpl implements LoginPresenter, LoginInteractor.OnLog
         }
     }
 
-    @Override public void onSuccess() {
+    @Override
+    public void onSuccess() {
         if (loginView != null) {
             loginView.navigateToHome();
         }

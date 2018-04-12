@@ -3,9 +3,12 @@ package com.kigamba.mvp.interactors;
 import android.os.Handler;
 import android.text.TextUtils;
 
+/**
+ * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
+ */
 public class LoginInteractorImpl implements LoginInteractor {
 
-    boolean fail = true;
+    boolean fail = false;
 
     @Override
     public void login(final String username, final String password, final OnLoginFinishedListener listener) {
