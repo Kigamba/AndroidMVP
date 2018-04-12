@@ -7,6 +7,8 @@ public interface LoginInteractor {
 
         void onPasswordError();
 
+        void onOtherError(String error);
+
         void onSuccess();
     }
 

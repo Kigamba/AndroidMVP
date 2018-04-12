@@ -1,11 +1,13 @@
 package com.kigamba.mvp.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.kigamba.mvp.R;
 import com.kigamba.mvp.interactors.LoginInteractorImpl;
@@ -15,7 +17,7 @@ import com.kigamba.mvp.presenters.LoginPresenterImpl;
 
 public class LoginActivity extends Activity implements LoginView, View.OnClickListener {
 
-    private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     private EditText username;
     private EditText password;
     private LoginPresenter presenter;
@@ -24,7 +26,7 @@ public class LoginActivity extends Activity implements LoginView, View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        progressBar = (ProgressBar) findViewById(R.id.progress);
+        progressDialog = new ProgressDialog(this);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         findViewById(R.id.button).setOnClickListener(this);
@@ -38,11 +40,11 @@ public class LoginActivity extends Activity implements LoginView, View.OnClickLi
     }
 
     @Override public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        progressDialog.show();
     }
 
     @Override public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        progressDialog.dismiss();
     }
 
     @Override public void setUsernameError() {
@@ -51,6 +53,12 @@ public class LoginActivity extends Activity implements LoginView, View.OnClickLi
 
     @Override public void setPasswordError() {
         password.setError(getString(R.string.password_error));
+    }
+
+    @Override
+    public void showOtherError(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG)
+                .show();
     }
 
     @Override public void navigateToHome() {

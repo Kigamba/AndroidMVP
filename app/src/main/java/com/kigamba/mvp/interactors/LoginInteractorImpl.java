@@ -5,6 +5,8 @@ import android.text.TextUtils;
 
 public class LoginInteractorImpl implements LoginInteractor {
 
+    boolean fail = true;
+
     @Override
     public void login(final String username, final String password, final OnLoginFinishedListener listener) {
         // Mock login. I'm creating a handler to delay the answer a couple of seconds
@@ -18,6 +20,12 @@ public class LoginInteractorImpl implements LoginInteractor {
                     listener.onPasswordError();
                     return;
                 }
+
+                if (fail) {
+                    listener.onOtherError("Server error occured!");
+                    return;
+                }
+
                 listener.onSuccess();
             }
         }, 2000);
