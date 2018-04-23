@@ -1,7 +1,8 @@
 package com.kigamba.mvp.interactors;
 
 import android.os.Handler;
-import android.text.TextUtils;
+
+import com.kigamba.mvp.validators.CredentialsValidator;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
@@ -15,17 +16,22 @@ public class LoginInteractorImpl implements LoginInteractor {
         // Mock login. I'm creating a handler to delay the answer a couple of seconds
         new Handler().postDelayed(new Runnable() {
             @Override public void run() {
-                if (TextUtils.isEmpty(username)) {
-                    listener.onUsernameError();
-                    return;
-                }
-                if (TextUtils.isEmpty(password)) {
-                    listener.onPasswordError();
-                    return;
+
+                switch(CredentialsValidator.isCredentialsOk(username, password)) {
+                    case CredentialsValidator.USERNAME_ERROR:
+                        listener.onUsernameError();
+                        return;
+
+                    case CredentialsValidator.PASSWORD_ERROR:
+                        listener.onPasswordError();
+                        return;
+
+                    case CredentialsValidator.CREDENTIALS_OK:
+                        break;
                 }
 
                 if (fail) {
-                    listener.onOtherError("Server error occured!");
+                    listener.onOtherError("Server Error Occurred!");
                     return;
                 }
 
