@@ -1,7 +1,6 @@
 package com.kigamba.mvp.presenters;
 
 import com.kigamba.mvp.interactors.LoginInteractor;
-import com.kigamba.mvp.interactors.LoginInteractorImpl;
 import com.kigamba.mvp.views.LoginView;
 
 import org.junit.Assert;
@@ -12,8 +11,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.

@@ -1,7 +1,6 @@
 package com.kigamba.mvp.presenters;
 
 import com.kigamba.mvp.interactors.FindItemsInteractor;
-import com.kigamba.mvp.presenters.MainPresenterImpl;
 import com.kigamba.mvp.views.MainView;
 
 import org.junit.Before;
