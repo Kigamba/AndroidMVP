@@ -16,11 +16,14 @@ import java.util.List;
 @Dao
 public interface NoteDao {
 
-    @Query("SELECT * FROM note ORDER BY last_modified DESC")
-    List<Note> getAll();
+    @Query("SELECT * FROM notes ORDER BY last_modified DESC")
+    Note[] getAll();
 
     @Insert
     void insertAll(Note... notes);
+
+    @Query("SELECT * FROM notes where id = :noteId")
+    Note getNoteById(int noteId);
 
     @Update
     void update(Note note);

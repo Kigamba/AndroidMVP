@@ -1,5 +1,7 @@
 package com.kigamba.mvp.views;
 
+import com.kigamba.mvp.persistence.entities.Note;
+
 import java.util.List;
 
 /**
@@ -11,7 +13,9 @@ public interface MainView {
 
     void hideProgress();
 
-    void setItems(List<String> items);
+    void setNotes(List<Note> notes);
 
     void showMessage(String message);
+
+    void showNote(Note note);
 }

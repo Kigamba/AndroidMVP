@@ -10,7 +10,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "notes")
 public class Note {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     @ColumnInfo(name = "title")

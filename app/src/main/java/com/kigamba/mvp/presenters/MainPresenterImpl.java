@@ -42,7 +42,7 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
     @Override
     public void onFinished(List<String> items) {
         if (mainView != null) {
-            mainView.setItems(items);
+            //mainView.setItems(items);
             mainView.hideProgress();
         }
     }

@@ -11,7 +11,7 @@ import com.kigamba.mvp.persistence.entities.Note;
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 23/04/2018.
  */
-@Database(entities = {Note.class}, version = 1)
+@Database(entities = {Note.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase instance;
