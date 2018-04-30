@@ -2,6 +2,12 @@ package com.kigamba.mvp.presenters;
 
 import android.content.Context;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.kigamba.mvp.interactors.FindItemsInteractor;
 import com.kigamba.mvp.persistence.AppDatabase;
 import com.kigamba.mvp.persistence.entities.Note;
@@ -80,5 +86,32 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
         FetchNotesAsyncTask fetchNotesAsyncTask = new FetchNotesAsyncTask();
         fetchNotesAsyncTask.setMainPresenter(this);
         fetchNotesAsyncTask.execute();
+    }
+
+
+    private void fetchWeatherData() {
+        if (mainView instanceof Context) {
+            Context context = (Context) mainView;
+            RequestQueue queue = Volley.newRequestQueue(context);
+            String url = "http://www.google.com";
+
+// Request a string response from the provided URL.
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            // Display the first 500 characters of the response string.
+                            mTextView.setText("Response is: " + response.substring(0, 500));
+                        }
+                    }, new Response.ErrorListener().ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    mTextView.setText("That didn't work!");
+                }
+            });
+
+// Add the request to the RequestQueue.
+            queue.add(stringRequest);
+        }
     }
 }
