@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,11 +33,12 @@ import java.util.List;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
  *
  */
-public class MainActivity extends Activity implements MainView, AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements MainView, AdapterView.OnItemClickListener {
 
     private ListView listView;
     private ProgressBar progressBar;
     private MainPresenter presenter;
+    private FloatingActionButton newNoteBtn;
 
     public static final String PARCELEABLE_KEY_NOTE_ID = "NOTE ID";
 
@@ -46,8 +49,17 @@ public class MainActivity extends Activity implements MainView, AdapterView.OnIt
         listView = (ListView) findViewById(R.id.list);
         listView.setOnItemClickListener(this);
         progressBar = (ProgressBar) findViewById(R.id.progress);
+        newNoteBtn = (FloatingActionButton) findViewById(R.id.fab_mainActivity_newNoteBtn);
 
         presenter = new MainPresenterImpl(this, new FindItemsInteractorImpl());
+
+        newNoteBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                presenter.onNewNoteButtonClicked();
+            }
+        });
     }
 
     @Override
@@ -91,7 +103,7 @@ public class MainActivity extends Activity implements MainView, AdapterView.OnIt
     }
 
     @Override
-    public void setNotes(final List<Note> notes) {
+    public void setNotes(final Note[] notes) {
         listView.setAdapter(new ArrayAdapter(this, R.layout.item_row, notes){
 
             @NonNull
@@ -101,7 +113,7 @@ public class MainActivity extends Activity implements MainView, AdapterView.OnIt
                     convertView = getLayoutInflater().inflate(R.layout.item_row, null);
                 }
 
-                Note note = notes.get(position);
+                Note note = notes[position];
 
                 TextView title = (TextView) convertView.findViewById(R.id.tv_itemRow_title);
                 TextView description = (TextView) convertView.findViewById(R.id.tv_itemRow_title);
@@ -116,7 +128,8 @@ public class MainActivity extends Activity implements MainView, AdapterView.OnIt
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showNote(notes.get(position));
+                //showNote(notes.get(position));
+                presenter.onItemClicked(position);
             }
         });
     }
@@ -134,6 +147,12 @@ public class MainActivity extends Activity implements MainView, AdapterView.OnIt
         bundle.putInt(PARCELEABLE_KEY_NOTE_ID, note.getId());
         intent.putExtras(bundle);
 
+        startActivity(intent);
+    }
+
+    @Override
+    public void openNewNoteView() {
+        Intent intent = new Intent(MainActivity.this, NoteActivity.class);
         startActivity(intent);
     }
 

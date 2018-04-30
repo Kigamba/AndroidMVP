@@ -13,9 +13,11 @@ public interface MainView {
 
     void hideProgress();
 
-    void setNotes(List<Note> notes);
+    void setNotes(Note[] notes);
 
     void showMessage(String message);
 
     void showNote(Note note);
+
+    void openNewNoteView();
 }

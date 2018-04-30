@@ -1,6 +1,11 @@
 package com.kigamba.mvp.presenters;
 
+import android.content.Context;
+
 import com.kigamba.mvp.interactors.FindItemsInteractor;
+import com.kigamba.mvp.persistence.AppDatabase;
+import com.kigamba.mvp.persistence.entities.Note;
+import com.kigamba.mvp.tasks.FetchNotesAsyncTask;
 import com.kigamba.mvp.views.MainView;
 
 import java.util.List;
@@ -12,6 +17,7 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
 
     private MainView mainView;
     private FindItemsInteractor findItemsInteractor;
+    private Note[] notes;
 
     public MainPresenterImpl(MainView mainView, FindItemsInteractor findItemsInteractor) {
         this.mainView = mainView;
@@ -25,12 +31,31 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
         }
 
         findItemsInteractor.findItems(this);
+
+        FetchNotesAsyncTask fetchNotesAsyncTask = new FetchNotesAsyncTask();
+        fetchNotesAsyncTask.setMainPresenter(this);
+        fetchNotesAsyncTask.execute();
+    }
+
+    @Override
+    public Note[] getNotes() {
+        if (mainView instanceof Context) {
+            AppDatabase appDatabase = AppDatabase.getInstance((Context) mainView);
+            return appDatabase.noteDao().getAll();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void onNewNoteButtonClicked() {
+        mainView.openNewNoteView();
     }
 
     @Override
     public void onItemClicked(int position) {
-        if (mainView != null) {
-            mainView.showMessage(String.format("Position %d clicked", position + 1));
+        if (mainView != null && notes != null && position < notes.length) {
+            mainView.showNote(notes[position]);
         }
     }
 
@@ -47,6 +72,7 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
         }
     }
 
+    @Override
     public MainView getMainView() {
         return mainView;
     }

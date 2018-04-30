@@ -5,6 +5,7 @@ import android.content.Context;
 import com.kigamba.mvp.persistence.AppDatabase;
 import com.kigamba.mvp.persistence.daos.NoteDao;
 import com.kigamba.mvp.persistence.entities.Note;
+import com.kigamba.mvp.tasks.SaveNoteAsyncTask;
 import com.kigamba.mvp.views.NoteView;
 
 /**
@@ -48,6 +49,9 @@ public class NoteViewPresenterImpl implements NoteViewPresenter {
     @Override
     public void onDestroy() {
         Note note = noteView.getNote();
-        saveNote(note);
+
+        SaveNoteAsyncTask saveNoteAsyncTask = new SaveNoteAsyncTask();
+        saveNoteAsyncTask.setNoteViewPresenter(this);
+        saveNoteAsyncTask.setNote(note);
     }
 }

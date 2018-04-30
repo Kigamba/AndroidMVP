@@ -53,4 +53,5 @@ dependencies {
 
     // Test helpers for Room
     testCompile "android.arch.persistence.room:testing:1.0.0"
+    compile 'com.android.support:design:25.3.1'
 }
