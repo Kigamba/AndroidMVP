@@ -31,17 +31,15 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
         }
 
         findItemsInteractor.findItems(this);
-
-        FetchNotesAsyncTask fetchNotesAsyncTask = new FetchNotesAsyncTask();
-        fetchNotesAsyncTask.setMainPresenter(this);
-        fetchNotesAsyncTask.execute();
+        fetchNotes();
     }
 
     @Override
     public Note[] getNotes() {
         if (mainView instanceof Context) {
             AppDatabase appDatabase = AppDatabase.getInstance((Context) mainView);
-            return appDatabase.noteDao().getAll();
+            notes = appDatabase.noteDao().getAll();
+            return notes;
         }
 
         return null;
@@ -75,5 +73,12 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
     @Override
     public MainView getMainView() {
         return mainView;
+    }
+
+    @Override
+    public void fetchNotes() {
+        FetchNotesAsyncTask fetchNotesAsyncTask = new FetchNotesAsyncTask();
+        fetchNotesAsyncTask.setMainPresenter(this);
+        fetchNotesAsyncTask.execute();
     }
 }

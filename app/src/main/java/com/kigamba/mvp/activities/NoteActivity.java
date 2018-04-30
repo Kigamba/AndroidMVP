@@ -1,20 +1,20 @@
 package com.kigamba.mvp.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import com.kigamba.mvp.R;
-import com.kigamba.mvp.persistence.entities.Note;
 import com.kigamba.mvp.presenters.NoteViewPresenterImpl;
 import com.kigamba.mvp.views.NoteView;
 
 public class NoteActivity extends AppCompatActivity implements NoteView {
 
-    private Note note;
     private EditText titleEditText;
     private EditText descriptionEditText;
     private NoteViewPresenterImpl noteViewPresenter;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +28,7 @@ public class NoteActivity extends AppCompatActivity implements NoteView {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             int noteId = bundle.getInt(MainActivity.PARCELEABLE_KEY_NOTE_ID);
-            note = noteViewPresenter.getNote(noteId);
-
-            if (note != null) {
-                setNoteDetails(note.getTitle(), note.getDescription());
-            }
+            noteViewPresenter.fetchNote(noteId);
         }
 
     }
@@ -40,6 +36,8 @@ public class NoteActivity extends AppCompatActivity implements NoteView {
     private void instantiateViews() {
         titleEditText = (EditText) findViewById(R.id.et_noteView_title);
         descriptionEditText = (EditText) findViewById(R.id.et_noteView_description);
+
+        progressDialog = new ProgressDialog(this);
     }
 
     @Override
@@ -49,20 +47,37 @@ public class NoteActivity extends AppCompatActivity implements NoteView {
     }
 
     @Override
-    public Note getNote() {
-        if (note == null) {
-            note = new Note();
-        }
+    public String[] getNoteDetails() {
+        String[] toReturn = new String[2];
 
-        note.setTitle(titleEditText.getText().toString());
-        note.setDescription(descriptionEditText.getText().toString());
+        toReturn[0] = titleEditText.getText().toString();
+        toReturn[1] = descriptionEditText.getText().toString();
 
-        return note;
+        return toReturn;
     }
 
     @Override
     protected void onDestroy() {
-        noteViewPresenter.onDestroy();
+
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        if (isFinishing()) {
+            noteViewPresenter.onDestroy();
+        }
+
+        super.onStop();
+    }
+
+    @Override
+    public void showProgress() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgress() {
+        progressDialog.hide();
     }
 }

@@ -19,4 +19,6 @@ public interface MainPresenter {
     Note[] getNotes();
 
     MainView getMainView();
+
+    void fetchNotes();
 }

@@ -1,13 +1,15 @@
 package com.kigamba.mvp.activities;
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,13 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kigamba.mvp.R;
+import com.kigamba.mvp.communication.BroadcastManager;
 import com.kigamba.mvp.interactors.FindItemsInteractorImpl;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.views.MainView;
 import com.kigamba.mvp.presenters.MainPresenter;
 import com.kigamba.mvp.presenters.MainPresenterImpl;
-
-import java.util.List;
+import com.kigamba.mvp.views.MainView;
 
 /**
  *
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     private ProgressBar progressBar;
     private MainPresenter presenter;
     private FloatingActionButton newNoteBtn;
+    private BroadcastReceiver newNoteUpdateReceiver;
 
     public static final String PARCELEABLE_KEY_NOTE_ID = "NOTE ID";
 
@@ -66,6 +68,18 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     protected void onResume() {
         super.onResume();
         presenter.onResume();
+
+        if (newNoteUpdateReceiver == null) {
+            newNoteUpdateReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    presenter.fetchNotes();
+                }
+            };
+        }
+
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(newNoteUpdateReceiver, new IntentFilter(BroadcastManager.NEW_NOTE_EVENT));
     }
 
     @Override
@@ -88,6 +102,16 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        if (newNoteUpdateReceiver != null) {
+            LocalBroadcastManager.getInstance(this)
+                    .unregisterReceiver(newNoteUpdateReceiver);
+        }
+
+        super.onPause();
     }
 
     @Override
@@ -116,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
                 Note note = notes[position];
 
                 TextView title = (TextView) convertView.findViewById(R.id.tv_itemRow_title);
-                TextView description = (TextView) convertView.findViewById(R.id.tv_itemRow_title);
+                TextView description = (TextView) convertView.findViewById(R.id.tv_itemRow_description);
 
                 title.setText(note.getTitle());
                 description.setText(note.getDescription());

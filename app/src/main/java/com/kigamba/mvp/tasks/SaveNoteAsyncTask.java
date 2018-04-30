@@ -1,10 +1,13 @@
 package com.kigamba.mvp.tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.kigamba.mvp.communication.BroadcastManager;
 import com.kigamba.mvp.persistence.entities.Note;
 import com.kigamba.mvp.presenters.NoteViewPresenter;
+import com.kigamba.mvp.views.NoteView;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 30/04/2018.
@@ -38,6 +41,10 @@ public class SaveNoteAsyncTask extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object o) {
-        // Todo: Send a broadcast here that a new note was saved
+        NoteView noteView = noteViewPresenter.getView();
+        if (noteView instanceof Context) {
+            Context context = (Context) noteView;
+            BroadcastManager.sendNewNoteEvent(context);
+        }
     }
 }
