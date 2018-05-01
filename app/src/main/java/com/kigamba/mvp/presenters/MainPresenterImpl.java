@@ -1,6 +1,7 @@
 package com.kigamba.mvp.presenters;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -8,11 +9,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.kigamba.mvp.activities.MainActivity;
 import com.kigamba.mvp.interactors.FindItemsInteractor;
 import com.kigamba.mvp.persistence.AppDatabase;
 import com.kigamba.mvp.persistence.entities.Note;
 import com.kigamba.mvp.tasks.FetchNotesAsyncTask;
 import com.kigamba.mvp.views.MainView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -24,6 +29,8 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
     private MainView mainView;
     private FindItemsInteractor findItemsInteractor;
     private Note[] notes;
+
+    private static final String TAG = MainActivity.class.getName();
 
     public MainPresenterImpl(MainView mainView, FindItemsInteractor findItemsInteractor) {
         this.mainView = mainView;
@@ -38,6 +45,7 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
 
         findItemsInteractor.findItems(this);
         fetchNotes();
+        fetchWeatherData();
     }
 
     @Override
@@ -88,29 +96,39 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
         fetchNotesAsyncTask.execute();
     }
 
-
     private void fetchWeatherData() {
         if (mainView instanceof Context) {
             Context context = (Context) mainView;
             RequestQueue queue = Volley.newRequestQueue(context);
-            String url = "http://www.google.com";
+            String url = "http://api.openweathermap.org/data/2.5/weather?q=Nairobi&APPID=0a3d55e210916e7bc4ae50f246cc07d0";
 
-// Request a string response from the provided URL.
+            // Request a string response from the provided URL.
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
                             // Display the first 500 characters of the response string.
-                            mTextView.setText("Response is: " + response.substring(0, 500));
-                        }
-                    }, new Response.ErrorListener().ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    mTextView.setText("That didn't work!");
-                }
-            });
+                            JSONObject jsonObject = new JSONObject(response);
 
-// Add the request to the RequestQueue.
+                            if (jsonObject.has("weather") && jsonObject.getJSONArray("weather").length() > 0) {
+                                JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
+                                mainView.showMessage("Weather: " + weather.getString("description"));
+                            }
+                        } catch (JSONException e) {
+                            Log.e(TAG, Log.getStackTraceString(e));
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mainView.showMessage("An error occurred retrieving weather data");
+                    }
+                }
+            );
+
+            // Add the request to the RequestQueue.
             queue.add(stringRequest);
         }
     }
