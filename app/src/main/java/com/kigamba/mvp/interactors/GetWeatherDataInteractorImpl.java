@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by Kigamba on 01-May-18.
+ * Created by Kigamba (nek.eam@gmail.com) on 01-May-18.
  */
 
 public class GetWeatherDataInteractorImpl implements GetWeatherDataInteractor, Response.Listener<String>, Response.ErrorListener {
