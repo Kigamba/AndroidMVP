@@ -1,40 +1,33 @@
 package com.kigamba.mvp.presenters;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.kigamba.mvp.activities.MainActivity;
-import com.kigamba.mvp.interactors.FindItemsInteractor;
-import com.kigamba.mvp.persistence.AppDatabase;
+import com.kigamba.mvp.interactors.GetWeatherDataInteractor;
+import com.kigamba.mvp.interactors.GetWeatherDataInteractorImpl;
+import com.kigamba.mvp.interactors.NotesInteractor;
+import com.kigamba.mvp.interactors.NotesInteractorImpl;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.tasks.FetchNotesAsyncTask;
 import com.kigamba.mvp.views.MainView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
  */
-public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnFinishedListener {
+public class MainPresenterImpl implements MainPresenter, NotesInteractor.OnFinishedListener {
 
     private MainView mainView;
-    private FindItemsInteractor findItemsInteractor;
+    private NotesInteractor notesInteractor;
+    private GetWeatherDataInteractor getWeatherDataInteractor;
     private Note[] notes;
 
-    private static final String TAG = MainActivity.class.getName();
-
-    public MainPresenterImpl(MainView mainView, FindItemsInteractor findItemsInteractor) {
+    public MainPresenterImpl(MainView mainView) {
         this.mainView = mainView;
-        this.findItemsInteractor = findItemsInteractor;
+        this.notesInteractor = new NotesInteractorImpl();
+        this.getWeatherDataInteractor = new GetWeatherDataInteractorImpl();
+
+        if (mainView instanceof Context) {
+            this.notesInteractor.setContext((Context) mainView);
+            this.getWeatherDataInteractor.setContext((Context) mainView);
+        }
     }
 
     @Override
@@ -43,20 +36,8 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
             mainView.showProgress();
         }
 
-        findItemsInteractor.findItems(this);
-        fetchNotes();
+        notesInteractor.getAllNotes(this);
         fetchWeatherData();
-    }
-
-    @Override
-    public Note[] getNotes() {
-        if (mainView instanceof Context) {
-            AppDatabase appDatabase = AppDatabase.getInstance((Context) mainView);
-            notes = appDatabase.noteDao().getAll();
-            return notes;
-        }
-
-        return null;
     }
 
     @Override
@@ -77,59 +58,37 @@ public class MainPresenterImpl implements MainPresenter, FindItemsInteractor.OnF
     }
 
     @Override
-    public void onFinished(List<String> items) {
-        if (mainView != null) {
-            //mainView.setItems(items);
-            mainView.hideProgress();
-        }
-    }
-
-    @Override
     public MainView getMainView() {
         return mainView;
     }
 
     @Override
     public void fetchNotes() {
-        FetchNotesAsyncTask fetchNotesAsyncTask = new FetchNotesAsyncTask();
-        fetchNotesAsyncTask.setMainPresenter(this);
-        fetchNotesAsyncTask.execute();
+        notesInteractor.getAllNotes(this);
     }
 
-    private void fetchWeatherData() {
-        if (mainView instanceof Context) {
-            Context context = (Context) mainView;
-            RequestQueue queue = Volley.newRequestQueue(context);
-            String url = "http://api.openweathermap.org/data/2.5/weather?q=Nairobi&APPID=0a3d55e210916e7bc4ae50f246cc07d0";
+    @Override
+    public void fetchWeatherData() {
+        getWeatherDataInteractor.getLatestWeather(new GetWeatherDataInteractor.OnFinishedListener() {
+            @Override
+            public void onSuccess(String weatherString) {
+                mainView.showMessage("Weather: " + weatherString);
+            }
 
-            // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            // Display the first 500 characters of the response string.
-                            JSONObject jsonObject = new JSONObject(response);
+            @Override
+            public void onError(String error) {
+                //Should probably show a red-colored message here
+                mainView.showMessage("An error occurred retrieving weather data");
+            }
+        });
+    }
 
-                            if (jsonObject.has("weather") && jsonObject.getJSONArray("weather").length() > 0) {
-                                JSONObject weather = jsonObject.getJSONArray("weather").getJSONObject(0);
-                                mainView.showMessage("Weather: " + weather.getString("description"));
-                            }
-                        } catch (JSONException e) {
-                            Log.e(TAG, Log.getStackTraceString(e));
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mainView.showMessage("An error occurred retrieving weather data");
-                    }
-                }
-            );
-
-            // Add the request to the RequestQueue.
-            queue.add(stringRequest);
+    @Override
+    public void onFinished(Note[] notes) {
+        this.notes = notes;
+        if (mainView != null) {
+            mainView.hideProgress();
+            mainView.setNotes(notes);
         }
     }
 }

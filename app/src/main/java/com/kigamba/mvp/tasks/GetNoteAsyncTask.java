@@ -2,8 +2,8 @@ package com.kigamba.mvp.tasks;
 
 import android.os.AsyncTask;
 
+import com.kigamba.mvp.interactors.NotesInteractor;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.presenters.NoteViewPresenter;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 30/04/2018.
@@ -11,16 +11,21 @@ import com.kigamba.mvp.presenters.NoteViewPresenter;
 
 public class GetNoteAsyncTask extends AsyncTask<Integer, Note, Note> {
 
-    private NoteViewPresenter noteViewPresenter;
+    private NotesInteractor notesInteractor;
+    private NotesInteractor.OnFinishedListener onFinishedListener;
 
-    public void setNoteViewPresenter(NoteViewPresenter noteViewPresenter) {
-        this.noteViewPresenter = noteViewPresenter;
+    public void setOnFinishedListener(NotesInteractor.OnFinishedListener onFinishedListener) {
+        this.onFinishedListener = onFinishedListener;
+    }
+
+    public void setNotesInteractor(NotesInteractor notesInteractor) {
+        this.notesInteractor = notesInteractor;
     }
 
     @Override
     protected Note doInBackground(Integer... params) {
-        if (noteViewPresenter != null && params != null && params.length > 0) {
-            return noteViewPresenter.getNote(params[0]);
+        if (notesInteractor != null && params != null && params.length > 0) {
+            return notesInteractor.getNoteFromLayer(params[0]);
         }
 
         return null;
@@ -30,8 +35,8 @@ public class GetNoteAsyncTask extends AsyncTask<Integer, Note, Note> {
     protected void onPostExecute(Note note) {
         super.onPostExecute(note);
 
-        if (noteViewPresenter != null) {
-            noteViewPresenter.setNote(note);
+        if (onFinishedListener != null) {
+            onFinishedListener.onFinished(new Note[]{note});
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.kigamba.mvp.presenters;
 
-import com.kigamba.mvp.interactors.FindItemsInteractor;
+import com.kigamba.mvp.interactors.NotesInteractor;
 import com.kigamba.mvp.views.MainView;
 
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class MainPresenterTest {
     @Mock
     MainView view;
     @Mock
-    FindItemsInteractor interactor;
+    NotesInteractor interactor;
 
     private MainPresenterImpl presenter;
 

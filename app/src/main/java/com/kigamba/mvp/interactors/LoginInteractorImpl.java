@@ -9,11 +9,12 @@ import com.kigamba.mvp.validators.CredentialsValidator;
  */
 public class LoginInteractorImpl implements LoginInteractor {
 
-    boolean fail = false;
+    private boolean fail = false;
 
     @Override
     public void login(final String username, final String password, final OnLoginFinishedListener listener) {
         // Mock login. I'm creating a handler to delay the answer a couple of seconds
+        // No other way to do this within the given time !!!!!
         new Handler().postDelayed(new Runnable() {
             @Override public void run() {
 

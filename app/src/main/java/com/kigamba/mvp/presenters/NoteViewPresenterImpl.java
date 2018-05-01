@@ -1,13 +1,11 @@
 package com.kigamba.mvp.presenters;
 
 import android.content.Context;
-import android.text.TextUtils;
 
-import com.kigamba.mvp.persistence.AppDatabase;
-import com.kigamba.mvp.persistence.daos.NoteDao;
+import com.kigamba.mvp.Utils;
+import com.kigamba.mvp.interactors.NotesInteractor;
+import com.kigamba.mvp.interactors.NotesInteractorImpl;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.tasks.GetNoteAsyncTask;
-import com.kigamba.mvp.tasks.SaveNoteAsyncTask;
 import com.kigamba.mvp.views.NoteView;
 
 /**
@@ -18,35 +16,15 @@ public class NoteViewPresenterImpl implements NoteViewPresenter {
 
     private NoteView noteView;
     private Note note;
-
+    private NotesInteractor notesInteractor;
 
     public NoteViewPresenterImpl(NoteView noteView) {
         this.noteView = noteView;
-    }
+        notesInteractor = new NotesInteractorImpl();
 
-    @Override
-    public void saveNote(Note note) {
         if (noteView instanceof Context) {
-            AppDatabase appDatabase = AppDatabase.getInstance((Context) noteView);
-            NoteDao noteDao = appDatabase.noteDao();
-
-            if (note.getId() == 0) {
-                noteDao.insertAll(note);
-            } else {
-                noteDao.update(note);
-            }
+            notesInteractor.setContext((Context) noteView);
         }
-    }
-
-    @Override
-    public Note getNote(int id) {
-        if (noteView instanceof Context && id > 0) {
-            AppDatabase appDatabase = AppDatabase.getInstance((Context) noteView);
-            NoteDao noteDao = appDatabase.noteDao();
-            return noteDao.getNoteById(id);
-        }
-
-        return null;
     }
 
     @Override
@@ -61,9 +39,17 @@ public class NoteViewPresenterImpl implements NoteViewPresenter {
     public void fetchNote(int id) {
         noteView.showProgress();
 
-        GetNoteAsyncTask getNoteAsyncTask = new GetNoteAsyncTask();
-        getNoteAsyncTask.setNoteViewPresenter(this);
-        getNoteAsyncTask.execute(id);
+        notesInteractor.getNote(id, new NotesInteractor.OnFinishedListener() {
+            @Override
+            public void onFinished(Note[] notes) {
+                noteView.hideProgress();
+
+                if (notes != null && notes.length > 0) {
+                    note = notes[0];
+                    noteView.setNoteDetails(note.getTitle(), note.getDescription());
+                }
+            }
+        });
     }
 
     @Override
@@ -75,30 +61,17 @@ public class NoteViewPresenterImpl implements NoteViewPresenter {
     public void onDestroy() {
         String[] noteDetails = noteView.getNoteDetails();
 
-        if (note == null) {
-            note = new Note();
-        } else {
-            note.setLastModified(System.currentTimeMillis());
-        }
+        note = Utils.prepareNoteForSaving(note);
 
-        if (!validateNote(noteDetails[0], noteDetails[1])) {
+        if (!Utils.validateNoteDetails(noteDetails[0], noteDetails[1])) {
             return;
         }
 
         note.setTitle(noteDetails[0]);
         note.setDescription(noteDetails[1]);
 
-        SaveNoteAsyncTask saveNoteAsyncTask = new SaveNoteAsyncTask();
-        saveNoteAsyncTask.setNoteViewPresenter(this);
-        saveNoteAsyncTask.setNote(note);
-        saveNoteAsyncTask.execute();
+        notesInteractor.saveNote(note);
     }
 
-    private boolean validateNote(String title, String description) {
-        if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(description)) {
-            return true;
-        }
 
-        return false;
-    }
 }

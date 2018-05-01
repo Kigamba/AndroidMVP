@@ -7,11 +7,7 @@ import java.util.List;
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
  */
-public interface MainView {
-
-    void showProgress();
-
-    void hideProgress();
+public interface MainView extends ProgressView{
 
     void setNotes(Note[] notes);
 

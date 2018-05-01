@@ -9,10 +9,6 @@ import com.kigamba.mvp.views.NoteView;
 
 public interface NoteViewPresenter {
 
-    void saveNote(Note note);
-
-    Note getNote(int id);
-
     void setNote(Note note);
 
     void fetchNote(int id);

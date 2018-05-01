@@ -1,6 +1,5 @@
 package com.kigamba.mvp.presenters;
 
-import com.kigamba.mvp.persistence.entities.Note;
 import com.kigamba.mvp.views.MainView;
 
 /**
@@ -16,9 +15,9 @@ public interface MainPresenter {
 
     void onDestroy();
 
-    Note[] getNotes();
-
     MainView getMainView();
 
     void fetchNotes();
+
+    void fetchWeatherData();
 }

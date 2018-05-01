@@ -1,13 +1,10 @@
 package com.kigamba.mvp.tasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-import com.kigamba.mvp.communication.BroadcastManager;
+import com.kigamba.mvp.interactors.NotesInteractor;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.presenters.NoteViewPresenter;
-import com.kigamba.mvp.views.NoteView;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 30/04/2018.
@@ -15,11 +12,16 @@ import com.kigamba.mvp.views.NoteView;
 
 public class SaveNoteAsyncTask extends AsyncTask {
 
-    private NoteViewPresenter noteViewPresenter;
+    private NotesInteractor.OnFinishedListener onFinishedListener;
+    private NotesInteractor notesInteractor;
     private Note note;
 
-    public void setNoteViewPresenter(@NonNull NoteViewPresenter noteViewPresenter) {
-        this.noteViewPresenter = noteViewPresenter;
+    public void setOnFinishedListener(NotesInteractor.OnFinishedListener onFinishedListener) {
+        this.onFinishedListener = onFinishedListener;
+    }
+
+    public void setNotesInteractor(NotesInteractor notesInteractor) {
+        this.notesInteractor = notesInteractor;
     }
 
     public void setNote(@NonNull Note note) {
@@ -28,8 +30,8 @@ public class SaveNoteAsyncTask extends AsyncTask {
 
     @Override
     protected Object doInBackground(Object[] params) {
-        if (noteViewPresenter != null && note != null) {
-            noteViewPresenter.saveNote(note);
+        if (notesInteractor != null && note != null) {
+            notesInteractor.saveNoteToLayer(note);
         }
         return null;
     }
@@ -41,10 +43,8 @@ public class SaveNoteAsyncTask extends AsyncTask {
 
     @Override
     protected void onPostExecute(Object o) {
-        NoteView noteView = noteViewPresenter.getView();
-        if (noteView instanceof Context) {
-            Context context = (Context) noteView;
-            BroadcastManager.sendNewNoteEvent(context);
+        if (onFinishedListener != null) {
+            onFinishedListener.onFinished(new Note[]{note});
         }
     }
 }

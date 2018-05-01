@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.kigamba.mvp.R;
 import com.kigamba.mvp.communication.BroadcastManager;
-import com.kigamba.mvp.interactors.FindItemsInteractorImpl;
 import com.kigamba.mvp.persistence.entities.Note;
 import com.kigamba.mvp.presenters.MainPresenter;
 import com.kigamba.mvp.presenters.MainPresenterImpl;
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         progressBar = (ProgressBar) findViewById(R.id.progress);
         newNoteBtn = (FloatingActionButton) findViewById(R.id.fab_mainActivity_newNoteBtn);
 
-        presenter = new MainPresenterImpl(this, new FindItemsInteractorImpl());
+        presenter = new MainPresenterImpl(this);
 
         newNoteBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -152,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //showNote(notes.get(position));
                 presenter.onItemClicked(position);
             }
         });
