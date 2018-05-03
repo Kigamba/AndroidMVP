@@ -1,6 +1,8 @@
 package com.kigamba.mvp.presenters;
 
+import com.kigamba.mvp.interactors.GetWeatherDataInteractor;
 import com.kigamba.mvp.interactors.NotesInteractor;
+import com.kigamba.mvp.persistence.entities.Note;
 import com.kigamba.mvp.views.MainView;
 
 import org.junit.Before;
@@ -8,10 +10,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.internal.util.reflection.Whitebox;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,35 +29,62 @@ import static org.mockito.Mockito.verify;
 public class MainPresenterTest {
 
     @Mock
-    MainView view;
+    MainView mainView;
+
     @Mock
     NotesInteractor interactor;
+
+    @Mock
+    GetWeatherDataInteractor getWeatherDataInteractor;
 
     private MainPresenterImpl presenter;
 
     @Before
     public void setUp() throws Exception {
-        presenter = new MainPresenterImpl(view, interactor);
+        presenter = new MainPresenterImpl(mainView);
+        Whitebox.setInternalState(presenter, "notesInteractor", interactor);
+        Whitebox.setInternalState(presenter, "getWeatherDataInteractor", getWeatherDataInteractor);
     }
 
     @Test
     public void checkIfShowsProgressOnResume() {
         presenter.onResume();
-        verify(view, times(1)).showProgress();
+        verify(mainView, times(1)).showProgress();
+        verify(interactor, times(1)).getAllNotes(presenter);
+        verify(getWeatherDataInteractor, times(1)).getLatestWeather(Mockito.any(GetWeatherDataInteractor.OnFinishedListener.class));
     }
 
     @Test
-    public void checkIfShowsMessageOnItemClick() {
-        presenter.onItemClicked(1);
-        verify(view, times(1)).showMessage(anyString());
+    public void onItemClickedShouldShowNote() {
+        Note selectedNote = new Note();
+        Note[] notes = new Note[]{selectedNote};
+
+        Whitebox.setInternalState(presenter, "notes", notes);
+        presenter.onItemClicked(0);
+
+        verify(mainView, times(1)).showNote(selectedNote);
+
+        Whitebox.setInternalState(presenter, "notes", null);
     }
 
     @Test
-    public void checkIfRightMessageIsDisplayed() {
-        ArgumentCaptor<String> captor = forClass(String.class);
+    public void onItemClickedShouldNotShowNote() {
+        Note selectedNote = new Note();
+        Note[] notes = new Note[]{selectedNote};
+
+        presenter.onItemClicked(0);
+        verify(mainView, times(0)).showNote(selectedNote);
+
+        Whitebox.setInternalState(presenter, "notes", notes);
+        presenter.onItemClicked(2);
+        verify(mainView, times(0)).showNote(selectedNote);
+
+        Whitebox.setInternalState(presenter, "mainView", null);
         presenter.onItemClicked(1);
-        verify(view, times(1)).showMessage(captor.capture());
-        assertThat(captor.getValue(), is("Position 2 clicked"));
+        verify(mainView, times(0)).showNote(selectedNote);
+
+        Whitebox.setInternalState(presenter, "notes", null);
+        Whitebox.setInternalState(presenter, "mainView", mainView);
     }
 
     @Test
@@ -66,10 +94,25 @@ public class MainPresenterTest {
     }
 
     @Test
-    public void checkIfItemsArePassedToView() {
-        List<String> items = Arrays.asList("Model", "View", "Controller");
-        presenter.onFinished(items);
-        verify(view, times(1)).setItems(items);
-        verify(view, times(1)).hideProgress();
+    public void onFinished() {
+        Note[] notes = new Note[]{new Note()};
+
+        presenter.onFinished(notes);
+
+        verify(mainView, Mockito.times(1)).hideProgress();
+        verify(mainView, Mockito.times(1)).setNotes(notes);
+    }
+
+    @Test
+    public void onFinishedShouldNotCallMainView() {
+        Note[] notes = new Note[]{new Note()};
+
+        Whitebox.setInternalState(presenter, "mainView", null);
+        presenter.onFinished(notes);
+
+        verify(mainView, Mockito.times(0)).hideProgress();
+        verify(mainView, Mockito.times(0)).setNotes(notes);
+
+        Whitebox.setInternalState(presenter, "mainView", mainView);
     }
 }

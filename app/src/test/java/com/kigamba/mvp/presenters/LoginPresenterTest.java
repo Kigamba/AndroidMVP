@@ -52,4 +52,43 @@ public class LoginPresenterTest {
 
         Whitebox.setInternalState(loginPresenter, "loginView", loginView);
     }
+
+    @Test
+    public void onSuccessShouldNavigateToHome() {
+        loginPresenter.onSuccess();
+
+        Mockito.verify(loginView, Mockito.times(1))
+                .navigateToHome();
+    }
+
+    @Test
+    public void onOtherError() {
+        String otherError = "some error";
+        loginPresenter.onOtherError(otherError);
+
+        Mockito.verify(loginView, Mockito.times(1))
+                .hideProgress();
+
+        Mockito.verify(loginView, Mockito.times(1))
+                .showOtherError(otherError);
+    }
+
+    @Test
+    public void onUsernameError() {
+        loginPresenter.onUsernameError();
+
+        Mockito.verify(loginView, Mockito.times(1))
+                .hideProgress();
+
+        Mockito.verify(loginView, Mockito.times(1))
+                .setUsernameError();
+    }
+
+    @Test
+    public void onPasswordError() {
+        loginPresenter.onPasswordError();
+
+        Mockito.verify(loginView, Mockito.times(1))
+                .setPasswordError();
+    }
 }
