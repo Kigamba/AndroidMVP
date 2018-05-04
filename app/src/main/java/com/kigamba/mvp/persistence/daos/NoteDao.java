@@ -20,7 +20,7 @@ public interface NoteDao {
     Note[] getAll();
 
     @Insert
-    void insertAll(Note... notes);
+    long[] insertAll(Note... notes);
 
     @Query("SELECT * FROM notes where id = :noteId")
     Note getNoteById(int noteId);
