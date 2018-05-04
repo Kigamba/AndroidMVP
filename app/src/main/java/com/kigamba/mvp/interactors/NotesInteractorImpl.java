@@ -59,7 +59,7 @@ public class NotesInteractorImpl implements NotesInteractor {
     @Override
     public boolean saveNoteToLayer(Note note) {
         NoteDao noteDao = getNoteDao();
-        if (getNoteDao() != null) {
+        if (noteDao != null) {
             try {
                 return Utils.saveNote(noteDao, note);
             } catch (Exception e) {

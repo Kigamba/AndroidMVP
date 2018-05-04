@@ -4,13 +4,16 @@ import com.kigamba.mvp.persistence.daos.NoteDao;
 import com.kigamba.mvp.persistence.entities.Note;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 03/05/2018.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class UtilsTest {
 
     @Test
