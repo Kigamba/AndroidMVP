@@ -51,7 +51,7 @@ public class NoteDaoTest {
 
         noteDao.insertAll(note);
 
-        List<Note> noteList = noteDao.getAll();
+        Note[] noteList = noteDao.getAll();
 
         boolean noteFound = false;
         for(Note noteInList: noteList) {
