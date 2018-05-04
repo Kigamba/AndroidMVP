@@ -32,9 +32,7 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile ('com.android.support:design:26.1.0') {
-        exclude group: "com.android.support", module: "support-annotations"
-    }
+    compile 'com.android.support:design:26.1.0'
 
     compile 'com.android.volley:volley:1.1.0'
 
@@ -58,12 +56,8 @@ dependencies {
     //annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
     // Room (use 1.1.0-beta3 for latest beta)
-    compile ("android.arch.persistence.room:runtime:1.0.0") {
-        exclude group: "com.android.support", module: "support-annotations"
-    }
-    annotationProcessor ("android.arch.persistence.room:compiler:1.0.0") {
-        exclude group: "com.android.support", module: "support-annotations"
-    }
+    compile "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
 
     // Paging
     //compile "android.arch.paging:runtime:1.0.0-rc1"
@@ -72,7 +66,5 @@ dependencies {
     //testCompile "android.arch.core:core-testing:1.1.1"
 
     // Test helpers for Room
-    testCompile ("android.arch.persistence.room:testing:1.0.0") {
-        exclude group: "com.android.support", module: "support-annotations"
-    }
+    testCompile "android.arch.persistence.room:testing:1.0.0"
 }
