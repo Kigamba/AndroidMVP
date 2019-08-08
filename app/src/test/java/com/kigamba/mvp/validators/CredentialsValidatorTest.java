@@ -1,12 +1,15 @@
 package com.kigamba.mvp.validators;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import static org.junit.Assert.*;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 03/05/2018.
  */
+@RunWith(RobolectricTestRunner.class)
 public class CredentialsValidatorTest {
 
     @Test
