@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId 'com.kigamba.mvp'
@@ -13,6 +12,7 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -36,12 +36,12 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.0.90-beta'
 
     //androidTestCompile 'com.android.support.test:rules:1.0.2'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+    //androidTestCompile 'com.android.support.test:rules:0.5'
     testCompile 'org.robolectric:robolectric:3.6.1'
 
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support:support-annotations:26.1.0'
+    androidTestCompile 'com.android.support.test:runner:1.0.2'
+    androidTestCompile 'com.android.support.test:rules:1.0.2'
+    //androidTestCompile 'com.android.support:support-annotations:26.1.0'
 
 
     // Room (use 1.1.0-beta3 for latest beta)
