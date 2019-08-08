@@ -1,6 +1,7 @@
 package com.kigamba.mvp.interactors;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.kigamba.mvp.Utils;
@@ -41,7 +42,7 @@ public class NotesInteractorImpl implements NotesInteractor {
         saveNoteAsyncTask.setNotesInteractor(this);
         saveNoteAsyncTask.setOnFinishedListener(onFinishedListener);
         saveNoteAsyncTask.setNote(note);
-        saveNoteAsyncTask.execute();
+        saveNoteAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

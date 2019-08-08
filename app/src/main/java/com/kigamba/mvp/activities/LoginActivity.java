@@ -4,25 +4,23 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.kigamba.mvp.R;
-import com.kigamba.mvp.interactors.LoginInteractorImpl;
-import com.kigamba.mvp.views.LoginView;
+import com.kigamba.mvp.contract.LoginContract;
+import com.kigamba.mvp.interactors.LoginInteractor;
 import com.kigamba.mvp.presenters.LoginPresenter;
-import com.kigamba.mvp.presenters.LoginPresenterImpl;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
  */
-public class LoginActivity extends Activity implements LoginView, View.OnClickListener {
+public class LoginActivity extends Activity implements LoginContract.View, android.view.View.OnClickListener {
 
     private ProgressDialog progressDialog;
     private EditText username;
     private EditText password;
-    private LoginPresenter presenter;
+    private LoginContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +32,7 @@ public class LoginActivity extends Activity implements LoginView, View.OnClickLi
         password = (EditText) findViewById(R.id.login_passwordText);
         findViewById(R.id.login_loginButton).setOnClickListener(this);
 
-        presenter = new LoginPresenterImpl(this, new LoginInteractorImpl());
+        presenter = new LoginPresenter(this, new LoginInteractor());
     }
 
     @Override
@@ -76,7 +74,7 @@ public class LoginActivity extends Activity implements LoginView, View.OnClickLi
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(android.view.View v) {
         presenter.validateCredentials(username.getText().toString(), password.getText().toString());
     }
 }

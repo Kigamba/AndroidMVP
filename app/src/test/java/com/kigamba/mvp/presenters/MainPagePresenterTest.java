@@ -1,9 +1,9 @@
 package com.kigamba.mvp.presenters;
 
+import com.kigamba.mvp.contract.MainContract;
 import com.kigamba.mvp.interactors.GetWeatherDataInteractor;
 import com.kigamba.mvp.interactors.NotesInteractor;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.views.MainView;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,10 +21,10 @@ import static org.mockito.Mockito.verify;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class MainPresenterTest {
+public class MainPagePresenterTest {
 
     @Mock
-    MainView mainView;
+    MainContract.View mainView;
 
     @Mock
     NotesInteractor interactor;
@@ -32,11 +32,11 @@ public class MainPresenterTest {
     @Mock
     GetWeatherDataInteractor getWeatherDataInteractor;
 
-    private MainPresenterImpl presenter;
+    private MainPagePresenter presenter;
 
     @Before
     public void setUp() throws Exception {
-        presenter = new MainPresenterImpl(mainView);
+        presenter = new MainPagePresenter(mainView);
         Whitebox.setInternalState(presenter, "notesInteractor", interactor);
         Whitebox.setInternalState(presenter, "getWeatherDataInteractor", getWeatherDataInteractor);
     }

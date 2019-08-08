@@ -2,24 +2,24 @@ package com.kigamba.mvp.presenters;
 
 import android.content.Context;
 
+import com.kigamba.mvp.contract.MainContract;
 import com.kigamba.mvp.interactors.GetWeatherDataInteractor;
 import com.kigamba.mvp.interactors.GetWeatherDataInteractorImpl;
 import com.kigamba.mvp.interactors.NotesInteractor;
 import com.kigamba.mvp.interactors.NotesInteractorImpl;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.views.MainView;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
  */
-public class MainPresenterImpl implements MainPresenter, NotesInteractor.OnFinishedListener {
+public class MainPagePresenter implements MainContract.Presenter, NotesInteractor.OnFinishedListener {
 
-    private MainView mainView;
+    private MainContract.View mainView;
     private NotesInteractor notesInteractor;
     private GetWeatherDataInteractor getWeatherDataInteractor;
     private Note[] notes;
 
-    public MainPresenterImpl(MainView mainView) {
+    public MainPagePresenter(MainContract.View mainView) {
         this.mainView = mainView;
         this.notesInteractor = new NotesInteractorImpl();
         this.getWeatherDataInteractor = new GetWeatherDataInteractorImpl();
@@ -58,7 +58,7 @@ public class MainPresenterImpl implements MainPresenter, NotesInteractor.OnFinis
     }
 
     @Override
-    public MainView getMainView() {
+    public MainContract.View getMainView() {
         return mainView;
     }
 

@@ -3,6 +3,7 @@ package com.kigamba.mvp.presenters;
 import android.content.Context;
 
 import com.kigamba.mvp.Utils;
+import com.kigamba.mvp.contract.NotePageContract;
 import com.kigamba.mvp.interactors.NotesInteractor;
 import com.kigamba.mvp.interactors.NotesInteractorImpl;
 import com.kigamba.mvp.persistence.entities.Note;
@@ -12,13 +13,13 @@ import com.kigamba.mvp.views.NoteView;
  * Created by Ephraim Kigamba - ekigamba@ona.io on 24/04/2018.
  */
 
-public class NoteViewPresenterImpl implements NoteViewPresenter {
+public class NotePagePresenter implements NotePageContract.Presenter {
 
     private NoteView noteView;
     private Note note;
     private NotesInteractor notesInteractor;
 
-    public NoteViewPresenterImpl(NoteView noteView) {
+    public NotePagePresenter(NoteView noteView) {
         this.noteView = noteView;
         notesInteractor = new NotesInteractorImpl();
 
