@@ -6,14 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 
 import com.kigamba.mvp.R;
-import com.kigamba.mvp.presenters.NoteViewPresenterImpl;
+import com.kigamba.mvp.presenters.NotePagePresenter;
 import com.kigamba.mvp.views.NoteView;
 
 public class NoteActivity extends AppCompatActivity implements NoteView {
 
     private EditText titleEditText;
     private EditText descriptionEditText;
-    private NoteViewPresenterImpl noteViewPresenter;
+    private NotePagePresenter noteViewPresenter;
     private ProgressDialog progressDialog;
 
     @Override
@@ -21,7 +21,7 @@ public class NoteActivity extends AppCompatActivity implements NoteView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
-        noteViewPresenter = new NoteViewPresenterImpl(this);
+        noteViewPresenter = new NotePagePresenter(this);
 
         instantiateViews();
 

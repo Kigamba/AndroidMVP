@@ -1,7 +1,6 @@
 package com.kigamba.mvp.presenters;
 
-import com.kigamba.mvp.interactors.LoginInteractor;
-import com.kigamba.mvp.views.LoginView;
+import com.kigamba.mvp.contract.LoginContract;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,16 +18,16 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class LoginPresenterTest {
 
     @Mock
-    private LoginView loginView;
+    private LoginContract.View loginView;
 
     @Mock
-    private LoginInteractor loginInteractor;
+    private LoginContract.Interactor loginInteractor;
 
-    private LoginPresenterImpl loginPresenter;
+    private LoginPresenter loginPresenter;
 
     @Before
     public void setup() {
-        loginPresenter = new LoginPresenterImpl(loginView, loginInteractor);
+        loginPresenter = new LoginPresenter(loginView, loginInteractor);
     }
 
     @Test
@@ -43,7 +42,7 @@ public class LoginPresenterTest {
     }
 
     @Test
-    public void onDestoryInvalidatesView() {
+    public void onDestroyInvalidatesView() {
         loginPresenter.onDestroy();
 
         Object newLoginView = Whitebox.getInternalState(loginPresenter, "loginView");

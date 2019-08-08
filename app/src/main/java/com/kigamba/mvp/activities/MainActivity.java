@@ -12,7 +12,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -23,21 +22,20 @@ import android.widget.Toast;
 
 import com.kigamba.mvp.R;
 import com.kigamba.mvp.communication.BroadcastManager;
+import com.kigamba.mvp.contract.MainContract;
 import com.kigamba.mvp.persistence.entities.Note;
-import com.kigamba.mvp.presenters.MainPresenter;
-import com.kigamba.mvp.presenters.MainPresenterImpl;
-import com.kigamba.mvp.views.MainView;
+import com.kigamba.mvp.presenters.MainPagePresenter;
 
 /**
  *
  * Created by Ephraim Kigamba - ekigamba@ona.io on 12/04/2018.
  *
  */
-public class MainActivity extends AppCompatActivity implements MainView, AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements MainContract.View, AdapterView.OnItemClickListener {
 
     private ListView listView;
     private ProgressBar progressBar;
-    private MainPresenter presenter;
+    private MainContract.Presenter presenter;
     private FloatingActionButton newNoteBtn;
     private BroadcastReceiver newNoteUpdateReceiver;
 
@@ -52,12 +50,12 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
         progressBar = (ProgressBar) findViewById(R.id.progress);
         newNoteBtn = (FloatingActionButton) findViewById(R.id.fab_mainActivity_newNoteBtn);
 
-        presenter = new MainPresenterImpl(this);
+        presenter = new MainPagePresenter(this);
 
-        newNoteBtn.setOnClickListener(new View.OnClickListener() {
+        newNoteBtn.setOnClickListener(new android.view.View.OnClickListener() {
 
             @Override
-            public void onClick(View v) {
+            public void onClick(android.view.View v) {
                 presenter.onNewNoteButtonClicked();
             }
         });
@@ -115,14 +113,14 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
     @Override
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
-        listView.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(android.view.View.VISIBLE);
+        listView.setVisibility(android.view.View.INVISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
-        listView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(android.view.View.INVISIBLE);
+        listView.setVisibility(android.view.View.VISIBLE);
     }
 
     @Override
@@ -131,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
             @NonNull
             @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            public android.view.View getView(int position, @Nullable android.view.View convertView, @NonNull ViewGroup parent) {
                 if (convertView == null) {
                     convertView = getLayoutInflater().inflate(R.layout.item_row, null);
                 }
@@ -150,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, android.view.View view, int position, long id) {
                 presenter.onItemClicked(position);
             }
         });
@@ -179,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Adapter
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, android.view.View view, int position, long id) {
         presenter.onItemClicked(position);
     }
 }
